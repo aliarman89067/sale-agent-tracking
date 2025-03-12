@@ -1,8 +1,8 @@
 import { Navbar } from "@/components/Navbar";
 import { NAVBAR_HEIGHT } from "@/constant/values";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
-const NonDashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const OrganizationsLayout = ({ children }: PropsWithChildren) => {
   return (
     <main className="flex flex-col">
       <Navbar />
@@ -16,4 +16,4 @@ const NonDashboardLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default NonDashboardLayout;
+export default OrganizationsLayout;

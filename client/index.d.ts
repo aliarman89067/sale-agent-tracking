@@ -8,3 +8,12 @@ interface CTAPrimaryButtonProps {
   onClick: () => void;
   classNames?: string;
 }
+
+interface EmptyPaperPlaneCTAProps {
+  title: string;
+}
+
+interface BackButtonProps {
+  title: string;
+  href: string;
+}

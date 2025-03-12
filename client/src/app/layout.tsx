@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Jacques_Francois, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const jacquesFrancois = Jacques_Francois({
   variable: "--font-francois-sans",
@@ -40,7 +41,7 @@ export default function RootLayout({
       <body
         className={`${jacquesFrancois.variable} ${dmSans.variable} antialiased`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
