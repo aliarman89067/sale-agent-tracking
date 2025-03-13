@@ -1,8 +1,11 @@
+"use client";
 import Link from "next/link";
 import { CTASecondaryButton } from "./CTASecondaryButton";
 import { NAVBAR_HEIGHT } from "@/constant/values";
+import { useRouter } from "next/navigation";
 
 export const Navbar = () => {
+  const router = useRouter();
   return (
     <nav className="fixed top-0 left-0 w-full h-fit bg-white z-50">
       <div
@@ -17,8 +20,14 @@ export const Navbar = () => {
           </Link>
         </div>
         <div className="flex items-center gap-3">
-          <CTASecondaryButton title="Login" onClick={() => {}} />
-          <CTASecondaryButton title="Signup" onClick={() => {}} />
+          <CTASecondaryButton
+            title="Login"
+            onClick={() => router.push("/signin")}
+          />
+          <CTASecondaryButton
+            title="Signup"
+            onClick={() => router.push("/signup")}
+          />
         </div>
       </div>
     </nav>

@@ -210,13 +210,27 @@
 [data-amplify-authenticator]
   [data-amplify-container]
   [data-amplify-router]
+  .amplify-button--primary:hover {
+  opacity: 90%;
+}
+[data-amplify-authenticator]
+  [data-amplify-container]
+  [data-amplify-router]
+  .amplify-button--primary:disabled {
+  opacity: 80%;
+  cursor: not-allowed;
+}
+[data-amplify-authenticator]
+  [data-amplify-container]
+  [data-amplify-router]
   .amplify-tabs__item {
   display: none;
 }
 [data-amplify-authenticator]
   [data-amplify-container]
   [data-amplify-router]
-  .amplify-visually-hidden {
+  .amplify-visually-hidden
+  legend {
   display: none;
 }
 [data-amplify-authenticator]

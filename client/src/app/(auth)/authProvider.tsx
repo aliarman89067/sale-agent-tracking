@@ -1,15 +1,19 @@
 "use client";
-import react, { PropsWithChildren, useEffect } from "react";
+import react, { PropsWithChildren, useEffect, useState } from "react";
 import {
   Authenticator,
   Heading,
+  Input,
+  Radio,
+  RadioGroupField,
   useAuthenticator,
   View,
+  VisuallyHidden,
 } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 import Image from "next/image";
 import { BackButton } from "@/components/BackButton";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AuthToggler } from "./AuthToggler";
 
 Amplify.configure({
@@ -23,137 +27,187 @@ Amplify.configure({
 
 const formFields = {
   signUp: {
-    username: {
-      placeholder: "Enter your name",
-      label: "User name",
-      isRequired: true,
+    "custom:adminname": {
       order: 1,
+      placeholder: "Enter your name",
+      label: "Username",
+      isRequired: true,
     },
     email: {
-      placeholder: "Enter your email",
+      order: 2,
+      placeholder: "Enter your Email Address",
       label: "Email",
       isRequired: true,
-      order: 2,
     },
     password: {
-      placeholder: "Enter your password",
+      order: 3,
+      placeholder: "Create a password",
       label: "Password",
       isRequired: true,
-      order: 3,
+    },
+    confirm_password: {
+      order: 4,
+      placeholder: "Confirm your password",
+      label: "Confirm Password",
+      isRequired: true,
     },
   },
 };
-
-const components = {
-  SignIn: {
-    Header() {
-      return (
-        <View>
-          <Heading className="font-jacquesFrancois font-semibold text-primaryGray text-lg">
-            Logo
-          </Heading>
-          <Heading className="font-medium text-secondaryGray text-xl">
-            Sign In as Admin
-          </Heading>
-        </View>
-      );
-    },
-    Footer() {
-      const { toSignUp, toForgotPassword } = useAuthenticator();
-      return (
-        <View className="mt-2 text-center">
-          <span
-            onClick={toForgotPassword}
-            className="text-sm font-medium text-primary cursor-pointer hover:underline my-3"
-          >
-            Forgot Password?
-          </span>
-          <p className="text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <button
-              onClick={toSignUp}
-              className="text-primary hover:underline bg-transparent border-none p-0"
+const getComponents = (role: "admin" | "agent") => {
+  return {
+    SignIn: {
+      Header() {
+        return (
+          <View>
+            <Heading className="font-jacquesFrancois font-semibold text-primaryGray text-lg">
+              Logo
+            </Heading>
+            <Heading className="font-medium text-secondaryGray text-xl">
+              Sign In as Admin
+            </Heading>
+          </View>
+        );
+      },
+      Footer() {
+        const { toSignUp, toForgotPassword } = useAuthenticator();
+        return (
+          <View className="mt-2 text-center">
+            <span
+              onClick={toForgotPassword}
+              className="text-sm font-medium text-primary cursor-pointer hover:underline my-3"
             >
-              Sign up here
-            </button>
-          </p>
-        </View>
-      );
+              Forgot Password?
+            </span>
+            <p className="text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <button
+                onClick={toSignUp}
+                className="text-primary hover:underline bg-transparent border-none p-0"
+              >
+                Sign up here
+              </button>
+            </p>
+          </View>
+        );
+      },
     },
-  },
-  SignUp: {
-    Header() {
-      return (
-        <View>
-          <Heading className="font-jacquesFrancois font-semibold text-primaryGray text-lg">
-            Logo
-          </Heading>
-          <Heading className="font-medium text-secondaryGray text-xl">
-            Sign Up as Admin
-          </Heading>
-        </View>
-      );
+    SignUp: {
+      Header() {
+        return (
+          <View>
+            <Heading className="font-jacquesFrancois font-semibold text-primaryGray text-lg">
+              Logo
+            </Heading>
+            <Heading className="font-medium text-secondaryGray text-xl">
+              Sign Up as Admin
+            </Heading>
+          </View>
+        );
+      },
+      FormFields() {
+        const { validationErrors } = useAuthenticator();
+        return (
+          <>
+            <Authenticator.SignUp.FormFields />
+            <View className="hidden">
+              <RadioGroupField
+                legend="Role"
+                defaultValue={role}
+                isReadOnly
+                name="custom:role"
+                errorMessage={validationErrors?.["custom:role"]}
+                hasError={!!validationErrors?.["custom:role"]}
+                isRequired
+              >
+                <Radio value="admin">Admin</Radio>
+                <Radio value="agent">Agent</Radio>
+              </RadioGroupField>
+            </View>
+          </>
+        );
+      },
+      Footer() {
+        const { toSignIn } = useAuthenticator();
+        return (
+          <View className="mt-4 text-center">
+            <p className="text-muted-foreground">
+              Already have an account?{" "}
+              <button
+                onClick={toSignIn}
+                className="text-primary hover:underline bg-transparent border-none p-0"
+              >
+                Sign in here
+              </button>
+            </p>
+          </View>
+        );
+      },
     },
-    Footer() {
-      const { toSignIn } = useAuthenticator();
-      return (
-        <View className="mt-4 text-center">
-          <p className="text-muted-foreground">
-            Already have an account?{" "}
+    ForgotPassword: {
+      Header() {
+        return (
+          <View>
+            <Heading className="font-jacquesFrancois font-semibold text-primaryGray text-lg">
+              Logo
+            </Heading>
+            <Heading className="font-medium text-secondaryGray text-xl">
+              Reset Your Password
+            </Heading>
+          </View>
+        );
+      },
+      Footer() {
+        const { toSignIn } = useAuthenticator();
+        return (
+          <View className="mt-4 text-center">
             <button
               onClick={toSignIn}
               className="text-primary hover:underline bg-transparent border-none p-0"
             >
-              Sign in here
+              Go Back
             </button>
-          </p>
-        </View>
-      );
+          </View>
+        );
+      },
     },
-  },
-  ForgotPassword: {
-    Header() {
-      return (
-        <View>
-          <Heading className="font-jacquesFrancois font-semibold text-primaryGray text-lg">
-            Logo
-          </Heading>
-          <Heading className="font-medium text-secondaryGray text-xl">
-            Reset Your Password
-          </Heading>
-        </View>
-      );
-    },
-    Footer() {
-      const { toSignIn } = useAuthenticator();
-      return (
-        <View className="mt-4 text-center">
-          <button
-            onClick={toSignIn}
-            className="text-primary hover:underline bg-transparent border-none p-0"
-          >
-            Go Back
-          </button>
-        </View>
-      );
-    },
-  },
+  };
 };
 
 const Auth = ({ children }: PropsWithChildren) => {
+  const { user } = useAuthenticator((context) => [context.user]);
+  const router = useRouter();
+  const [role, setRole] = useState<"admin" | "agent">("admin");
   const pathname = usePathname();
   const isAdminLogin = true;
+
+  const isAuthPage = pathname.match(/^\/(signin|signup)$/);
+
+  const isDashboard =
+    pathname.startsWith("dashboard") ||
+    pathname.startsWith("organizations") ||
+    pathname.startsWith("tenants") ||
+    pathname.startsWith("tenant");
+
+  useEffect(() => {
+    if (isAuthPage && user) {
+      router.push("/");
+    }
+  }, [user, router, pathname]);
+  if (!isDashboard && !isAuthPage) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="relative flex w-full h-screen justify-between">
       <div className="absolute w-[50%] top-6 left-14">
         <div className="flex flex-col w-[90%]">
           <BackButton title="Back" href="/" />
-          <AuthToggler />
+          <AuthToggler role={role} setRole={setRole} />
         </div>
       </div>
       <Authenticator
-        initialState="signUp"
-        components={components}
+        initialState={pathname.startsWith("/signup") ? "signUp" : "signIn"}
+        components={getComponents(role)}
         formFields={formFields}
         loginMechanisms={["email"]}
       >

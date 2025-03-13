@@ -17,3 +17,7 @@ interface BackButtonProps {
   title: string;
   href: string;
 }
+interface AuthTogglerProps {
+  role: "admin" | "agent";
+  setRole: (value: "admin" | "agent") => void;
+}

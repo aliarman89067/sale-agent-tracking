@@ -1,5 +1,7 @@
+"use client";
 import { Navbar } from "@/components/Navbar";
 import { NAVBAR_HEIGHT } from "@/constant/values";
+import { useGetAuthUserQuery } from "@/state/api";
 import React from "react";
 
 const NonDashboardLayout = ({ children }: { children: React.ReactNode }) => {
